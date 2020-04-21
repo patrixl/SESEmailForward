@@ -7,6 +7,10 @@ Parameters:
   ToAddress:
     Description: Email forwarded to address
     Type: String
+  Region:
+    Description: AWS Region for the SES Sender, e.g. us-east-1
+    Type: String
+
 Resources:
     SESEmailForwardFunction:
       Type: AWS::Lambda::Function
@@ -18,11 +22,15 @@ Resources:
           Variables:
             from_address: { "Fn::Sub": [ "${FromAddress}", { "FromAddress": {"Ref" : "FromAddress" }} ]}
             to_address: { "Fn::Sub": [ "${ToAddress}", { "ToAddress": {"Ref" : "ToAddress" }} ]}
+            region: { "Fn::Sub": [ "${Region}", { "Region": {"Ref" : "Region" }} ] }
         Code:
           ZipFile: !Sub |
             var AWS = require('aws-sdk');
+            var region = process.env.region;
+            AWS.config.update({region: region});
             var forwardFrom = process.env.from_address;
-            var forwardTo = process.env.to_address;  
+            var forwardTo = process.env.to_address;
+
             exports.handler = function(event, context) {
                 var msgInfo = JSON.parse(event.Records[0].Sns.Message);
                 
