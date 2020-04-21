@@ -20,9 +20,9 @@ Resources:
         Timeout: 30
         Environment:
           Variables:
-            from_address: { "Fn::Sub": [ "${FromAddress}", { "FromAddress": {"Ref" : "FromAddress" }} ]}
-            to_address: { "Fn::Sub": [ "${ToAddress}", { "ToAddress": {"Ref" : "ToAddress" }} ]}
-            region: { "Fn::Sub": [ "${Region}", { "Region": {"Ref" : "Region" }} ] }
+            from_address: !Ref FromAddress
+            to_address: !Ref ToAddress
+            region: !Ref Region
         Code:
           ZipFile: !Sub |
             var AWS = require('aws-sdk');
